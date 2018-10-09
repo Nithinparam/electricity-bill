@@ -1,0 +1,169 @@
+<html>
+    <head>
+        <title>
+            admins
+        </title>
+    </head>
+    
+   
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        
+        
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <body>
+            
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">ONLINE ELECTRICITY BILLING</a>
+            </nav>
+                <div id="one">
+                    <img src="img.jpg" alt="numberz" height="300px" width="100%">
+
+                </div>   
+    
+            
+           <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+            <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span> 
+      </button>
+        <a class="navbar-brand" href="registration.php">REGISTRATION</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+          <li class="active"><a href="admin.php">CALCULATE BILL</a></li>
+          <li><a href="view.php">VIEW</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="updateperunit.php"><span class="glyphicon glyphicon-user"></span>UPDATE COST PER UNIT</a></li>
+        <li><a href="logout_script.php"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+            <div class="container">
+                
+                
+                <form class="container" action=" " method="post">
+    <div class="form-group">
+      Consumer Number:
+      <input type="number" class="form-control col-lg-4" name="id" value="<?php if(isset($_POST['search'])) {
+      echo $_POST['id']; }elseif (isset($_POST['submit'])) { echo $_POST['id'];}?>"/> <br>
+      <input type="submit" class="btn-default" name="search" value="find"> 
+      <?php 
+      
+      
+      
+      $output = ' ';
+      if(isset($_POST['search'])) {
+          $searchq = $_POST['id'];
+          
+          
+          $query = "SELECT name FROM customer WHERE customer_no=$searchq";
+          $querys = mysqli_query($con, $query);
+          $count = mysqli_num_rows($querys);
+          if($count == 0){
+              $output=' ';
+              
+          }else {
+              while ($row = mysqli_fetch_array($querys)) {
+                  $name = $row['name'];
+                  $output .= '<div>'.$name.'</div>';
+                  
+              }
+              
+          }
+      }
+      ?>
+    </div>
+                    
+                    
+    <div class="form-group">
+    <label for="consumername">consumer name</label>
+    <?php print("$output");?>
+    </div>
+    <div class="form-group">
+      <label for="bill_no">Bill Number</label>
+      <input type="number" class="form-control col-lg-4" name="bill_no" value="<?php if(isset($_POST['submit'])) {
+      echo $_POST['bill_no']; }?>"/>"
+    </div>
+    <div class="form-group">
+      <label for="dates">month</label>
+      <input type="date" class="form-control col-lg-4" name="dates" value="<?php if(isset($_POST['submit'])) {
+      echo $_POST['expr']; }?>"/>
+    </div>
+    <div class="form-group">
+      <label for="expr">Expire date</label>
+      <input type="date" class="form-control col-lg-4" name="expr" value="<?php if(isset($_POST['submit'])) {
+      echo $_POST['expr']; }?>"/>
+    </div>
+<div class="form-group">
+  <label for="unit">unit consumed</label>
+  <input type="number" class="form-control col-lg-4" name="unit" value="<?php if(isset($_POST['submit'])) {
+      echo $_POST['unit']; }?>" />
+  <button type="submit" name="submit">calculate</button>
+</div>
+<?php
+if(isset($_POST['submit'])) {
+           $searchq=$_POST['id'];
+          $bill_no=$_POST['bill_no'];
+          $month=$_POST['dates'];
+          $expire=$_POST['expr'];
+          $val = $_POST['unit'];
+          
+         
+          
+          $query = "SELECT * FROM `updatecostperunit`";
+          
+          $querys=mysqli_query($con, $query);
+          while ($row = mysqli_fetch_array($querys)) {
+                  $val2 = $row['costperunit'];
+                  $amount=($val2*$val);
+          echo 'BILL AMOUNT : '.$amount;
+          
+          
+          }
+          
+          
+          
+}
+          
+?>
+                    <button type="submit" class="btn-lg btn-default" name="sub">update</button>
+                    <?php
+                    if(isset($_POST['sub'])) {
+                        $val = $_POST['unit'];
+                        $query = "SELECT * FROM `updatecostperunit`";
+          
+                        $querys=mysqli_query($con, $query);
+                        while ($row = mysqli_fetch_array($querys)) {
+                                $val2 = $row['costperunit'];
+                                    $amount=($val2*$val);
+                        $searchq = $_POST['id'];
+                        $month = $_POST['dates'];
+                        $expire=$_POST['expr'];
+                       $up="INSERT INTO bill(`amount`, `customer_no`, `month`, `due_date`, `state`) VALUES ('$amount','$searchq','$month','$expire','unpaid')";
+                       mysqli_query($con, $up)or die(mysqli_error($con));
+                       echo 'updated';
+                       echo ' '.$amount;
+                        }
+                    }
+                    ?>
+
+
+  </form>
+
+            </div>
+        </body>
+</html>
